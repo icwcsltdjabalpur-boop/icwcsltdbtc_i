@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICWCS - B2C Entry Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .window {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .window.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-buttons {
+            background: #34495e;
+            padding: 15px 30px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-btn.active {
+            background: #3498db;
+        }
+
+        .branch-header {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 20px 30px;
+            margin: -30px -30px 30px -30px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sub-title {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .branch-selection {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        input:invalid, select:invalid, textarea:invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        input:valid, select:valid, textarea:valid {
+            border-color: #27ae60;
+        }
+
+        .field-error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .field-success {
+            color: #27ae60;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .calculated {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-width: 1200px;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e1e8ed;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+
+        .data-table tr:nth-child(even):hover {
+            background-color: #f0f2f5;
+        }
+
+        .branch-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #27ae60;
+        }
+
+        .locked-branch {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                justify-content: center;
+            }
+            
+            .data-table {
+                font-size: 12px;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">Indian Coffee Workers Co-operative Society Ltd</h1>
+            <p style="font-size: 16px; margin: 5px 0;">Jabalpur, MP</p>
+            <h2 class="sub-title">B2C Details Entry Form</h2>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showWindow('branch')">🏢 Branch Selection</button>
+            <button class="nav-btn" onclick="showWindow('entry')" id="entryNavBtn" disabled>📝 Data Entry</button>
+            <button class="nav-btn" onclick="showWindow('reports')" id="reportsNavBtn" disabled>📊 Reports</button>
+            <button class="nav-btn" onclick="showWindow('summary')" id="summaryNavBtn" disabled>📈 Branch Summary</button>
+        </div>
+
+        <div class="content">
+            <!-- Branch Selection Window -->
+            <div id="branchWindow" class="window active">
+                <div class="branch-selection">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Branch Selection</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="branchSelect">Select Branch:</label>
+                            <select id="branchSelect" onchange="selectBranch()">
+                                <option value="">-- Select Branch --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="branchInfo" class="branch-info" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Data Entry Window -->
+            <div id="entryWindow" class="window">
+                <div id="branchHeader" class="branch-header" style="display: none;"></div>
+                
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">Data Entry Form</h3>
+                
+                <form id="dataForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="entryDate">Date: <span style="color: red;">*</span></label>
+                            <input type="date" id="entryDate" required oninput="validateField('entryDate')">
+                            <div id="entryDate-error" class="field-error">Date is mandatory!</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prefix">Prefix: <span style="color: red;">*</span></label>
+                            <input type="text" id="prefix" placeholder="Enter prefix" required oninput="updateCancelledPreview(); validateField('prefix')">
+                            <div id="prefix-error" class="field-error">Prefix is mandatory!</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="invoStartNo">Invoice Start No: <span style="color: red;">*</span></label>
+                            <input type="number" id="invoStartNo" placeholder="Start number" required oninput="calculateTotal(); validateField('invoStartNo')">
+                            <div id="invoStartNo-error" class="field-error">Invoice start number is mandatory!</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoEndNo">Invoice End No: <span style="color: red;">*</span></label>
+                            <input type="number" id="invoEndNo" placeholder="End number" required oninput="calculateTotal(); validateField('invoEndNo')">
+                            <div id="invoEndNo-error" class="field-error">Invoice end number is mandatory!</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="total">Total (Auto-calculated):</label>
+                            <input type="number" id="total" class="calculated" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="cancelledInvo">Cancelled Invoices (count only):</label>
+                            <input type="number" id="cancelledInvo" placeholder="Enter number of cancelled invoices" oninput="calculateNet()">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="netInvo">Net Invoices (Auto-calculated):</label>
+                            <input type="number" id="netInvo" class="calculated" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount: <span style="color: red;">*</span></label>
+                            <input type="number" id="amount" step="0.01" placeholder="Enter amount" required oninput="validateField('amount')">
+                            <div id="amount-error" class="field-error">Amount is mandatory!</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cancelledDetails">Details of Cancelled (invoice numbers):</label>
+                            <textarea id="cancelledDetails" rows="3" placeholder="e.g., 1,4,7 (prefix will be added automatically)" oninput="updateCancelledPreview(); validateField('cancelledDetails')"></textarea>
+                            <div id="cancelledPreview" style="font-size: 12px; color: #666; margin-top: 5px;"></div>
+                            <div id="cancelledDetails-error" class="field-error">Details of cancelled invoices are mandatory when cancelled count is greater than 0!</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reason">Reason:</label>
+                            <textarea id="reason" rows="3" placeholder="Enter reason"></textarea>
+                        </div>
+                    </div>
+
+                    <div id="validationSummary" style="display: none; background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4 style="color: #856404; margin: 0 0 10px 0;">⚠️ Please fix the following errors:</h4>
+                        <ul id="validationErrors" style="margin: 0; padding-left: 20px; color: #856404;"></ul>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-success" onclick="saveData()">💾 Save</button>
+                        <button type="button" class="btn btn-warning" onclick="updateData()">✏️ Update</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteData()">🗑️ Delete</button>
+                        <button type="button" class="btn btn-primary" onclick="clearForm()">🔄 Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Reports Window -->
+            <div id="reportsWindow" class="window">
+                <div id="reportsBranchHeader" class="branch-header" style="display: none;"></div>
+                
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">View Data & Reports</h3>
+                
+                <div class="filter-section">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="viewType">View Type:</label>
+                            <select id="viewType" onchange="changeViewType()">
+                                <option value="all">All Data</option>
+                                <option value="monthly">Month Wise</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="monthFilter" style="display: none;">
+                            <label for="filterMonth">Select Month:</label>
+                            <input type="month" id="filterMonth" onchange="filterByMonth()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-info" onclick="viewAllData()">👁️ View All Data</button>
+                    <button type="button" class="btn btn-success" onclick="exportCSV()">📊 Export CSV</button>
+                    <button type="button" class="btn btn-primary" onclick="exportExcel()">📈 Export Excel</button>
+                </div>
+
+                <div id="dataDisplay"></div>
+            </div>
+
+            <!-- Branch Summary Window -->
+            <div id="summaryWindow" class="window">
+                <div id="summaryBranchHeader" class="branch-header" style="display: none;"></div>
+                
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">Branch Summary & Analytics</h3>
+                
+                <div id="summaryDisplay"></div>
+            </div>
+
+            <div id="statusMessage"></div>
+        </div>
+    </div>
+
+    <!-- Modal for editing -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h3>Edit Entry</h3>
+            <form id="editForm">
+                <input type="hidden" id="editIndex">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editDate">Date: <span style="color: red;">*</span></label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrefix">Prefix: <span style="color: red;">*</span></label>
+                        <input type="text" id="editPrefix" required oninput="updateEditCancelledPreview()">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editInvoStartNo">Invoice Start No: <span style="color: red;">*</span></label>
+                        <input type="number" id="editInvoStartNo" required oninput="calculateEditTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label for="editInvoEndNo">Invoice End No: <span style="color: red;">*</span></label>
+                        <input type="number" id="editInvoEndNo" required oninput="calculateEditTotal()">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editTotal">Total:</label>
+                        <input type="number" id="editTotal" class="calculated" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCancelledInvo">Cancelled Invoices (count only):</label>
+                        <input type="number" id="editCancelledInvo" placeholder="Enter number of cancelled invoices" oninput="calculateEditNet()">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editNetInvo">Net Invoices:</label>
+                        <input type="number" id="editNetInvo" class="calculated" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAmount">Amount: <span style="color: red;">*</span></label>
+                        <input type="number" id="editAmount" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCancelledDetails">Details of Cancelled (invoice numbers):</label>
+                        <textarea id="editCancelledDetails" rows="3" placeholder="e.g., 1,4,7 (prefix will be added automatically)" oninput="updateEditCancelledPreview()"></textarea>
+                        <div id="editCancelledPreview" style="font-size: 12px; color: #666; margin-top: 5px;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editReason">Reason:</label>
+                        <textarea id="editReason" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="btn btn-success" onclick="saveEditedData()">💾 Save Changes</button>
+                    <button type="button" class="btn btn-danger" onclick="closeEditModal()">❌ Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Google Sheets Configuration
+        // ✅ CONFIGURED - Google Sheets integration is now active!
+        const SCRIPT_CONFIG = {
+            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwveXZ-tJoV6lR486nxSg4ustOfz29BmnuMR26AVhHT8n6e2HTV0WfGZfUrFt4dB1iBwA/exec',
+            USE_GOOGLE_SHEETS: true,
+            MASTER_SHEET_ID: '1BJfoUL-mAeG139jQASgajO3aPSmLdZ52npPUm_qD9eg',
+            TIMEOUT: 30000
+        };
+
+        // Default branch data
+        let branchesData = [
+            {
+                branchCode: 'JBP001',
+                branchName: 'Jabalpur Main Branch',
+                place: 'Jabalpur',
+                state: 'Madhya Pradesh',
+                sheetId: 'sheet_jbp_001'
+            },
+            {
+                branchCode: 'BHO002',
+                branchName: 'Bhopal Branch',
+                place: 'Bhopal',
+                state: 'Madhya Pradesh',
+                sheetId: 'sheet_bho_002'
+            },
+            {
+                branchCode: 'IND003',
+                branchName: 'Indore Branch',
+                place: 'Indore',
+                state: 'Madhya Pradesh',
+                sheetId: 'sheet_ind_003'
+            },
+            {
+                branchCode: 'GWL004',
+                branchName: 'Gwalior Branch',
+                place: 'Gwalior',
+                state: 'Madhya Pradesh',
+                sheetId: 'sheet_gwl_004'
+            }
+        ];
+
+        let selectedBranch = null;
+        let branchLocked = false;
+        let branchData = {};
+        let editingIndex = -1;
+
+        // Initialize the application
+        function initializeApp() {
+            setDefaultDate();
+            loadBranches();
+            
+            // Check if branch was previously locked
+            const lockedBranch = localStorage.getItem('lockedBranch');
+            if (lockedBranch) {
+                const branch = JSON.parse(lockedBranch);
+                selectBranchPermanently(branch);
+            }
+        }
+
+        function loadBranches() {
+            const branchSelect = document.getElementById('branchSelect');
+            branchSelect.innerHTML = '<option value="">-- Select Branch --</option>';
+            
+            branchesData.forEach(branch => {
+                const option = document.createElement('option');
+                option.value = branch.branchCode;
+                option.textContent = `${branch.branchCode} - ${branch.branchName}, ${branch.place}`;
+                branchSelect.appendChild(option);
+            });
+        }
+
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('entryDate').value = today;
+        }
+
+        function showWindow(windowName) {
+            // Hide all windows
+            document.querySelectorAll('.window').forEach(window => {
+                window.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected window and activate nav button
+            document.getElementById(windowName + 'Window').classList.add('active');
+            event.target.classList.add('active');
+            
+            // Auto-load summary when summary window is shown
+            if (windowName === 'summary' && selectedBranch) {
+                viewBranchSummary();
+            }
+        }
+
+        function selectBranch() {
+            const branchCode = document.getElementById('branchSelect').value;
+            if (!branchCode) return;
+
+            selectedBranch = branchesData.find(branch => branch.branchCode === branchCode);
+            if (selectedBranch) {
+                displayBranchInfo();
+                enableOtherWindows();
+                loadBranchData();
+                updateBranchHeaders();
+            }
+        }
+
+        function enableOtherWindows() {
+            document.getElementById('entryNavBtn').disabled = false;
+            document.getElementById('reportsNavBtn').disabled = false;
+            document.getElementById('summaryNavBtn').disabled = false;
+        }
+
+        function updateBranchHeaders() {
+            const headerContent = `
+                <h4 style="margin: 0; font-size: 18px;">Selected Branch: ${selectedBranch.branchName}</h4>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">
+                    <strong>Code:</strong> ${selectedBranch.branchCode} | 
+                    <strong>Place:</strong> ${selectedBranch.place}, ${selectedBranch.state} | 
+                    <strong>Sheet ID:</strong> ${selectedBranch.sheetId}
+                    ${branchLocked ? ' 🔒 (Locked)' : ''}
+                </p>
+            `;
+            
+            document.getElementById('branchHeader').innerHTML = headerContent;
+            document.getElementById('branchHeader').style.display = 'block';
+            
+            document.getElementById('reportsBranchHeader').innerHTML = headerContent;
+            document.getElementById('reportsBranchHeader').style.display = 'block';
+            
+            document.getElementById('summaryBranchHeader').innerHTML = headerContent;
+            document.getElementById('summaryBranchHeader').style.display = 'block';
+        }
+
+        function selectBranchPermanently(branch) {
+            selectedBranch = branch;
+            branchLocked = true;
+            
+            // Lock the branch selection
+            const branchSelect = document.getElementById('branchSelect');
+            branchSelect.value = branch.branchCode;
+            branchSelect.disabled = true;
+            
+            displayBranchInfo();
+            enableOtherWindows();
+            loadBranchData();
+            updateBranchHeaders();
+        }
+
+        function displayBranchInfo() {
+            const branchInfo = document.getElementById('branchInfo');
+            branchInfo.style.display = 'block';
+            
+            if (branchLocked) {
+                branchInfo.className = 'branch-info locked-branch';
+            }
+            
+            branchInfo.innerHTML = `
+                <h4>Selected Branch Information ${branchLocked ? '🔒 (Locked)' : ''}</h4>
+                <p><strong>Branch Code:</strong> ${selectedBranch.branchCode}</p>
+                <p><strong>Branch Name:</strong> ${selectedBranch.branchName}</p>
+                <p><strong>Place:</strong> ${selectedBranch.place}</p>
+                <p><strong>State:</strong> ${selectedBranch.state}</p>
+                <p><strong>Data Sheet ID:</strong> ${selectedBranch.sheetId}</p>
+                <div class="button-group">
+                    ${!branchLocked ? 
+                        `<button class="btn btn-warning" onclick="lockBranch()">🔒 Lock Branch Permanently</button>
+                         <button class="btn btn-primary" onclick="createDesktopShortcut()">🖥️ Create Desktop Shortcut</button>` : 
+                        `<button class="btn btn-info" onclick="unlockBranch()">🔓 Unlock Branch</button>
+                         <button class="btn btn-primary" onclick="createDesktopShortcut()">🖥️ Create Desktop Shortcut</button>`
+                    }
+                    <button class="btn btn-success" onclick="testGoogleSheetsConnection()">🔗 Test Google Sheets</button>
+                    <button class="btn btn-info" onclick="verifySheetStructure()">🔍 Verify Sheet Structure</button>
+                    <button class="btn btn-primary" onclick="testDataSync()">📊 Test Data Sync</button>
+                </div>
+            `;
+        }
+
+        function lockBranch() {
+            branchLocked = true;
+            localStorage.setItem('lockedBranch', JSON.stringify(selectedBranch));
+            displayBranchInfo();
+            showStatusMessage('Branch locked permanently! You can only work with this branch now.', 'success');
+        }
+
+        function unlockBranch() {
+            if (confirm('⚠️ Are you sure you want to unlock the branch?\n\nThis will allow you to switch between different branches.')) {
+                branchLocked = false;
+                localStorage.removeItem('lockedBranch');
+                
+                // Re-enable branch selection
+                const branchSelect = document.getElementById('branchSelect');
+                branchSelect.disabled = false;
+                
+                displayBranchInfo();
+                showStatusMessage('✅ Branch unlocked! You can now switch between branches.', 'success');
+            }
+        }
+
+        async function loadBranchData() {
+            const key = `branchData_${selectedBranch.branchCode}`;
+            const savedData = localStorage.getItem(key);
+            branchData[selectedBranch.branchCode] = savedData ? JSON.parse(savedData) : {};
+
+            // Load data from Google Sheets if enabled
+            if (SCRIPT_CONFIG.USE_GOOGLE_SHEETS) {
+                try {
+                    showStatusMessage('🔄 Loading data from Google Sheets...', 'info');
+                    await loadFromGoogleSheets();
+                    showStatusMessage('✅ Data loaded from Google Sheets successfully!', 'success');
+                } catch (error) {
+                    console.error('Google Sheets load error:', error);
+                    showStatusMessage(`⚠️ Using local data. Google Sheets load failed: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function loadFromGoogleSheets() {
+            const payload = {
+                action: 'loadData',
+                sheetId: SCRIPT_CONFIG.MASTER_SHEET_ID,
+                branchCode: selectedBranch.branchCode
+            };
+
+            const response = await fetch(SCRIPT_CONFIG.WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to load data from Google Sheets');
+            }
+
+            // Merge Google Sheets data with local data
+            if (result.data && Object.keys(result.data).length > 0) {
+                branchData[selectedBranch.branchCode] = result.data;
+                saveBranchData(); // Save to local storage as backup
+            }
+
+            return result;
+        }
+
+        function saveBranchData() {
+            const key = `branchData_${selectedBranch.branchCode}`;
+            localStorage.setItem(key, JSON.stringify(branchData[selectedBranch.branchCode]));
+        }
+
+        function calculateTotal() {
+            const startNo = parseInt(document.getElementById('invoStartNo').value) || 0;
+            const endNo = parseInt(document.getElementById('invoEndNo').value) || 0;
+            const total = endNo >= startNo ? endNo - startNo + 1 : 0;
+            document.getElementById('total').value = total;
+            calculateNet();
+        }
+
+        function calculateNet() {
+            const total = parseInt(document.getElementById('total').value) || 0;
+            const cancelled = parseInt(document.getElementById('cancelledInvo').value) || 0;
+            const net = total - cancelled;
+            document.getElementById('netInvo').value = net >= 0 ? net : 0;
+            
+            // Make cancelled details mandatory if cancelled invoices > 0
+            const cancelledDetailsField = document.getElementById('cancelledDetails');
+            const cancelledDetailsLabel = cancelledDetailsField.previousElementSibling;
+            
+            if (cancelled > 0) {
+                cancelledDetailsField.required = true;
+                cancelledDetailsLabel.innerHTML = 'Details of Cancelled (invoice numbers) <span style="color: red;">*</span>';
+            } else {
+                cancelledDetailsField.required = false;
+                cancelledDetailsLabel.innerHTML = 'Details of Cancelled (invoice numbers)';
+            }
+            
+            updateCancelledPreview();
+            validateField('cancelledDetails');
+        }
+
+        function updateCancelledPreview() {
+            const prefix = document.getElementById('prefix').value;
+            const cancelledDetails = document.getElementById('cancelledDetails').value;
+            const previewDiv = document.getElementById('cancelledPreview');
+            
+            if (prefix && cancelledDetails) {
+                const processedDetails = cancelledDetails.split(',')
+                    .map(num => num.trim())
+                    .filter(num => num.length > 0)
+                    .map(num => prefix + num)
+                    .join(', ');
+                previewDiv.innerHTML = `<strong>Preview with prefix:</strong> ${processedDetails}`;
+                previewDiv.style.color = '#27ae60';
+            } else {
+                previewDiv.innerHTML = '';
+            }
+        }
+
+        function validateField(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            let isValid = true;
+            let errorMessage = '';
+
+            errorDiv.style.display = 'none';
+            field.style.borderColor = '#e1e8ed';
+
+            switch(fieldId) {
+                case 'entryDate':
+                    if (!field.value) {
+                        isValid = false;
+                        errorMessage = 'Date is mandatory!';
+                    }
+                    break;
+                
+                case 'prefix':
+                    if (!field.value || field.value.trim() === '') {
+                        isValid = false;
+                        errorMessage = 'Prefix is mandatory!';
+                    }
+                    break;
+                
+                case 'invoStartNo':
+                    if (!field.value || field.value.trim() === '') {
+                        isValid = false;
+                        errorMessage = 'Invoice start number is mandatory!';
+                    } else if (parseInt(field.value) <= 0) {
+                        isValid = false;
+                        errorMessage = 'Invoice start number must be greater than 0!';
+                    }
+                    break;
+                
+                case 'invoEndNo':
+                    if (!field.value || field.value.trim() === '') {
+                        isValid = false;
+                        errorMessage = 'Invoice end number is mandatory!';
+                    } else if (parseInt(field.value) <= 0) {
+                        isValid = false;
+                        errorMessage = 'Invoice end number must be greater than 0!';
+                    } else {
+                        const startNo = parseInt(document.getElementById('invoStartNo').value) || 0;
+                        const endNo = parseInt(field.value);
+                        if (startNo > 0 && endNo < startNo) {
+                            isValid = false;
+                            errorMessage = 'End number cannot be less than start number!';
+                        }
+                    }
+                    break;
+                
+                case 'amount':
+                    if (!field.value || field.value.trim() === '') {
+                        isValid = false;
+                        errorMessage = 'Amount is mandatory!';
+                    } else if (parseFloat(field.value) <= 0) {
+                        isValid = false;
+                        errorMessage = 'Amount must be greater than 0!';
+                    }
+                    break;
+                
+                case 'cancelledDetails':
+                    const cancelledCount = parseInt(document.getElementById('cancelledInvo').value) || 0;
+                    if (cancelledCount > 0 && (!field.value || field.value.trim() === '')) {
+                        isValid = false;
+                        errorMessage = 'Details of cancelled invoices are mandatory when cancelled count is greater than 0!';
+                    }
+                    break;
+            }
+
+            if (!isValid) {
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+                field.style.borderColor = '#e74c3c';
+                field.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.1)';
+            } else {
+                field.style.borderColor = '#27ae60';
+                field.style.boxShadow = '0 0 0 3px rgba(39, 174, 96, 0.1)';
+            }
+
+            return isValid;
+        }
+
+        function validateAllFields() {
+            const mandatoryFields = ['entryDate', 'prefix', 'invoStartNo', 'invoEndNo', 'amount'];
+            let allValid = true;
+            let errors = [];
+
+            mandatoryFields.forEach(fieldId => {
+                if (!validateField(fieldId)) {
+                    allValid = false;
+                    const errorDiv = document.getElementById(fieldId + '-error');
+                    if (errorDiv && errorDiv.style.display === 'block') {
+                        errors.push(errorDiv.textContent);
+                    }
+                }
+            });
+
+            if (!validateField('cancelledDetails')) {
+                allValid = false;
+                const errorDiv = document.getElementById('cancelledDetails-error');
+                if (errorDiv && errorDiv.style.display === 'block') {
+                    errors.push(errorDiv.textContent);
+                }
+            }
+
+            const validationSummary = document.getElementById('validationSummary');
+            const validationErrors = document.getElementById('validationErrors');
+            
+            if (!allValid && errors.length > 0) {
+                validationErrors.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+                validationSummary.style.display = 'block';
+            } else {
+                validationSummary.style.display = 'none';
+            }
+
+            return allValid;
+        }
+
+        function clearValidationErrors() {
+            const errorDivs = document.querySelectorAll('.field-error');
+            errorDivs.forEach(div => {
+                div.style.display = 'none';
+            });
+
+            const fields = document.querySelectorAll('input, select, textarea');
+            fields.forEach(field => {
+                field.style.borderColor = '#e1e8ed';
+                field.style.boxShadow = 'none';
+            });
+
+            document.getElementById('validationSummary').style.display = 'none';
+        }
+
+        function calculateEditTotal() {
+            const startNo = parseInt(document.getElementById('editInvoStartNo').value) || 0;
+            const endNo = parseInt(document.getElementById('editInvoEndNo').value) || 0;
+            const total = endNo >= startNo ? endNo - startNo + 1 : 0;
+            document.getElementById('editTotal').value = total;
+            calculateEditNet();
+        }
+
+        function calculateEditNet() {
+            const total = parseInt(document.getElementById('editTotal').value) || 0;
+            const cancelled = parseInt(document.getElementById('editCancelledInvo').value) || 0;
+            const net = total - cancelled;
+            document.getElementById('editNetInvo').value = net >= 0 ? net : 0;
+            updateEditCancelledPreview();
+        }
+
+        function updateEditCancelledPreview() {
+            const prefix = document.getElementById('editPrefix').value;
+            const cancelledDetails = document.getElementById('editCancelledDetails').value;
+            const previewDiv = document.getElementById('editCancelledPreview');
+            
+            if (prefix && cancelledDetails) {
+                const processedDetails = cancelledDetails.split(',')
+                    .map(num => num.trim())
+                    .filter(num => num.length > 0)
+                    .map(num => prefix + num)
+                    .join(', ');
+                previewDiv.innerHTML = `<strong>Preview with prefix:</strong> ${processedDetails}`;
+                previewDiv.style.color = '#27ae60';
+            } else {
+                previewDiv.innerHTML = '';
+            }
+        }
+
+        async function saveData() {
+            if (!selectedBranch) {
+                showStatusMessage('Please select a branch first!', 'error');
+                return;
+            }
+
+            if (!validateAllFields()) {
+                showStatusMessage('Please fix all validation errors before saving!', 'error');
+                return;
+            }
+
+            const formData = getFormData();
+            if (!validateFormData(formData)) return;
+
+            if (!validateInvoiceNumbers(formData)) return;
+
+            const processedCancelledDetails = formData.cancelledDetails ? 
+                formData.cancelledDetails.split(',')
+                    .map(num => num.trim())
+                    .filter(num => num.length > 0)
+                    .map(num => formData.prefix + num)
+                    .join(', ') : '';
+
+            const processedData = {
+                ...formData,
+                cancelledDetails: processedCancelledDetails,
+                id: Date.now(),
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to local storage first
+            if (!branchData[selectedBranch.branchCode]) {
+                branchData[selectedBranch.branchCode] = {};
+            }
+
+            const monthKey = getMonthKey(formData.date);
+            
+            if (!branchData[selectedBranch.branchCode][monthKey]) {
+                createMonthSheet(monthKey);
+            }
+
+            branchData[selectedBranch.branchCode][monthKey].data.push(processedData);
+            saveBranchData();
+
+            // Sync with Google Sheets
+            if (SCRIPT_CONFIG.USE_GOOGLE_SHEETS) {
+                showStatusMessage('💾 Saving to local storage and syncing with Google Sheets...', 'info');
+                try {
+                    await syncToGoogleSheets(processedData, monthKey);
+                    showStatusMessage(`✅ Data saved successfully and synced to Google Sheets (${monthKey})!`, 'success');
+                } catch (error) {
+                    console.error('Google Sheets sync error:', error);
+                    showStatusMessage(`⚠️ Data saved locally but Google Sheets sync failed: ${error.message}`, 'error');
+                }
+            } else {
+                showStatusMessage(`📝 Data saved successfully in ${monthKey} sheet!`, 'success');
+            }
+
+            clearForm();
+        }
+
+        async function syncToGoogleSheets(data, monthKey) {
+            const [year, month] = monthKey.split('-');
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthName = monthNames[parseInt(month) - 1];
+            const sheetName = `${selectedBranch.branchCode}_${monthName}_${year}`;
+
+            const payload = {
+                action: 'saveData',
+                sheetId: SCRIPT_CONFIG.MASTER_SHEET_ID,
+                sheetName: sheetName,
+                branchCode: selectedBranch.branchCode,
+                branchName: selectedBranch.branchName,
+                data: {
+                    date: data.date,
+                    prefix: data.prefix,
+                    invoiceStartNo: data.invoStartNo,
+                    invoiceEndNo: data.invoEndNo,
+                    total: data.total,
+                    cancelledInvoices: data.cancelledInvo || '0',
+                    netInvoices: data.netInvo,
+                    amount: data.amount,
+                    cancelledDetails: data.cancelledDetails || '',
+                    reason: data.reason || '',
+                    timestamp: data.timestamp
+                }
+            };
+
+            const response = await fetch(SCRIPT_CONFIG.WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Unknown error occurred');
+            }
+
+            return result;
+        }
+
+        function getFormData() {
+            return {
+                date: document.getElementById('entryDate').value,
+                prefix: document.getElementById('prefix').value,
+                invoStartNo: document.getElementById('invoStartNo').value,
+                invoEndNo: document.getElementById('invoEndNo').value,
+                total: document.getElementById('total').value,
+                cancelledInvo: document.getElementById('cancelledInvo').value,
+                netInvo: document.getElementById('netInvo').value,
+                amount: document.getElementById('amount').value,
+                cancelledDetails: document.getElementById('cancelledDetails').value,
+                reason: document.getElementById('reason').value
+            };
+        }
+
+        function validateFormData(data) {
+            if (!data.date) {
+                showStatusMessage('Date is mandatory! Please enter a date.', 'error');
+                return false;
+            }
+            if (!data.prefix || data.prefix.trim() === '') {
+                showStatusMessage('Prefix is mandatory! Please enter a prefix.', 'error');
+                return false;
+            }
+            if (!data.invoStartNo || !data.invoEndNo) {
+                showStatusMessage('Invoice start and end numbers are mandatory! Please enter both values.', 'error');
+                return false;
+            }
+            if (!data.amount || data.amount.trim() === '') {
+                showStatusMessage('Amount is mandatory! Please enter an amount.', 'error');
+                return false;
+            }
+            if (parseInt(data.invoStartNo) > parseInt(data.invoEndNo)) {
+                showStatusMessage('Start number cannot be greater than end number!', 'error');
+                return false;
+            }
+            if (parseInt(data.cancelledInvo) > 0 && (!data.cancelledDetails || data.cancelledDetails.trim() === '')) {
+                showStatusMessage('Details of cancelled invoices are mandatory when cancelled count is greater than 0!', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function validateInvoiceNumbers(formData) {
+            const monthKey = getMonthKey(formData.date);
+            
+            if (!branchData[selectedBranch.branchCode] || !branchData[selectedBranch.branchCode][monthKey]) {
+                return true;
+            }
+
+            const existingData = branchData[selectedBranch.branchCode][monthKey].data;
+            const newStartNo = parseInt(formData.invoStartNo);
+            const newEndNo = parseInt(formData.invoEndNo);
+            const newPrefix = formData.prefix;
+
+            for (let record of existingData) {
+                const existingStartNo = parseInt(record.invoStartNo);
+                const existingEndNo = parseInt(record.invoEndNo);
+                const existingPrefix = record.prefix;
+
+                if (existingPrefix === newPrefix) {
+                    if ((newStartNo >= existingStartNo && newStartNo <= existingEndNo) ||
+                        (newEndNo >= existingStartNo && newEndNo <= existingEndNo) ||
+                        (newStartNo <= existingStartNo && newEndNo >= existingEndNo)) {
+                        showStatusMessage(`Invoice numbers overlap with existing range for prefix "${existingPrefix}": ${existingPrefix}${existingStartNo} to ${existingPrefix}${existingEndNo}`, 'error');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function getMonthKey(date) {
+            const dateObj = new Date(date);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            return `${year}-${month}`;
+        }
+
+        function createMonthSheet(monthKey) {
+            const [year, month] = monthKey.split('-');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthName = monthNames[parseInt(month) - 1];
+            
+            branchData[selectedBranch.branchCode][monthKey] = {
+                sheetName: `${monthName}_${year}`,
+                headers: [
+                    'Date', 'Prefix', 'Invoice Start No', 'Invoice End No', 
+                    'Total', 'Cancelled Invoices', 'Net Invoices', 'Amount', 
+                    'Cancelled Details', 'Reason', 'Timestamp'
+                ],
+                data: [],
+                created: new Date().toISOString()
+            };
+            
+            showStatusMessage(`Created new sheet: ${monthName} ${year}`, 'success');
+        }
+
+        function updateData() {
+            if (editingIndex === -1) {
+                showStatusMessage('Please select a record to update!', 'error');
+                return;
+            }
+            showStatusMessage('Update functionality - select a record from the data view to edit!', 'error');
+        }
+
+        function deleteData() {
+            if (editingIndex === -1) {
+                showStatusMessage('Please select a record to delete!', 'error');
+                return;
+            }
+            showStatusMessage('Delete functionality - select a record from the data view to delete!', 'error');
+        }
+
+        function clearForm() {
+            document.getElementById('dataForm').reset();
+            setDefaultDate();
+            editingIndex = -1;
+            clearValidationErrors();
+            document.getElementById('cancelledPreview').innerHTML = '';
+        }
+
+        function viewAllData() {
+            if (!selectedBranch || !branchData[selectedBranch.branchCode]) {
+                showStatusMessage('No data available for the selected branch!', 'error');
+                return;
+            }
+
+            const allData = [];
+            const monthKeys = Object.keys(branchData[selectedBranch.branchCode]);
+            
+            monthKeys.forEach(monthKey => {
+                if (branchData[selectedBranch.branchCode][monthKey].data) {
+                    allData.push(...branchData[selectedBranch.branchCode][monthKey].data);
+                }
+            });
+
+            displayData(allData, 'All Data');
+        }
+
+        function displayData(data, title = 'Data') {
+            const dataDisplay = document.getElementById('dataDisplay');
+            
+            if (!data || data.length === 0) {
+                dataDisplay.innerHTML = '<p>No data found.</p>';
+                return;
+            }
+
+            let tableHTML = `
+                <h4 style="margin-bottom: 15px; color: #2c3e50;">${title} (${data.length} records)</h4>
+                <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Prefix</th>
+                            <th>Start No</th>
+                            <th>End No</th>
+                            <th>Total</th>
+                            <th>Cancelled</th>
+                            <th>Net</th>
+                            <th>Amount</th>
+                            <th>Cancelled Details</th>
+                            <th>Reason</th>
+                            <th>Sheet</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach((record, index) => {
+                const monthKey = getMonthKey(record.date);
+                const sheetName = branchData[selectedBranch.branchCode][monthKey]?.sheetName || monthKey;
+                
+                const startNoDisplay = record.invoStartNo;
+                const endNoDisplay = record.invoEndNo;
+                
+                tableHTML += `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td><strong>${record.prefix}</strong></td>
+                        <td>${record.prefix}${startNoDisplay}</td>
+                        <td>${record.prefix}${endNoDisplay}</td>
+                        <td><strong>${record.total}</strong></td>
+                        <td>${record.cancelledInvo || '0'}</td>
+                        <td><strong>${record.netInvo}</strong></td>
+                        <td><strong>₹${parseFloat(record.amount || 0).toFixed(2)}</strong></td>
+                        <td style="max-width: 150px; word-wrap: break-word; font-size: 12px;">${record.cancelledDetails || '-'}</td>
+                        <td style="max-width: 120px; word-wrap: break-word; font-size: 12px;">${record.reason || '-'}</td>
+                        <td><span style="background: #e3f2fd; padding: 2px 8px; border-radius: 4px; font-size: 11px;">${sheetName}</span></td>
+                        <td style="white-space: nowrap;">
+                            <button class="btn btn-warning" onclick="editRecord('${record.id}')" style="margin: 1px; padding: 4px 8px; font-size: 11px;">✏️</button>
+                            <button class="btn btn-danger" onclick="deleteRecord('${record.id}')" style="margin: 1px; padding: 4px 8px; font-size: 11px;">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table></div>';
+            dataDisplay.innerHTML = tableHTML;
+        }
+
+        function editRecord(recordId) {
+            const record = findRecordById(recordId);
+            if (!record) {
+                showStatusMessage('Record not found!', 'error');
+                return;
+            }
+            
+            editingIndex = recordId;
+            
+            document.getElementById('editIndex').value = recordId;
+            document.getElementById('editDate').value = record.date;
+            document.getElementById('editPrefix').value = record.prefix;
+            document.getElementById('editInvoStartNo').value = record.invoStartNo;
+            document.getElementById('editInvoEndNo').value = record.invoEndNo;
+            document.getElementById('editTotal').value = record.total;
+            document.getElementById('editCancelledInvo').value = record.cancelledInvo || '';
+            document.getElementById('editNetInvo').value = record.netInvo;
+            document.getElementById('editAmount').value = record.amount;
+            
+            const cancelledDetailsForEdit = record.cancelledDetails ? 
+                record.cancelledDetails.split(', ')
+                    .map(item => item.replace(record.prefix, ''))
+                    .join(',') : '';
+            document.getElementById('editCancelledDetails').value = cancelledDetailsForEdit;
+            document.getElementById('editReason').value = record.reason;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function findRecordById(recordId) {
+            const monthKeys = Object.keys(branchData[selectedBranch.branchCode]);
+            for (let monthKey of monthKeys) {
+                const monthData = branchData[selectedBranch.branchCode][monthKey];
+                if (monthData.data) {
+                    const record = monthData.data.find(r => r.id == recordId);
+                    if (record) {
+                        record.monthKey = monthKey;
+                        return record;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function saveEditedData() {
+            const recordId = document.getElementById('editIndex').value;
+            const originalRecord = findRecordById(recordId);
+            
+            if (!originalRecord) {
+                showStatusMessage('Original record not found!', 'error');
+                return;
+            }
+
+            const editCancelledDetails = document.getElementById('editCancelledDetails').value;
+            const processedEditCancelledDetails = editCancelledDetails ? 
+                editCancelledDetails.split(',')
+                    .map(num => num.trim())
+                    .filter(num => num.length > 0)
+                    .map(num => document.getElementById('editPrefix').value + num)
+                    .join(', ') : '';
+
+            const updatedData = {
+                date: document.getElementById('editDate').value,
+                prefix: document.getElementById('editPrefix').value,
+                invoStartNo: document.getElementById('editInvoStartNo').value,
+                invoEndNo: document.getElementById('editInvoEndNo').value,
+                total: document.getElementById('editTotal').value,
+                cancelledInvo: document.getElementById('editCancelledInvo').value,
+                netInvo: document.getElementById('editNetInvo').value,
+                amount: document.getElementById('editAmount').value,
+                cancelledDetails: processedEditCancelledDetails,
+                reason: document.getElementById('editReason').value,
+                id: originalRecord.id,
+                timestamp: originalRecord.timestamp,
+                lastModified: new Date().toISOString()
+            };
+
+            const monthKey = originalRecord.monthKey;
+            const recordIndex = branchData[selectedBranch.branchCode][monthKey].data.findIndex(r => r.id == recordId);
+            
+            if (recordIndex !== -1) {
+                branchData[selectedBranch.branchCode][monthKey].data[recordIndex] = updatedData;
+                saveBranchData();
+                closeEditModal();
+                viewAllData();
+                showStatusMessage('Record updated successfully!', 'success');
+            } else {
+                showStatusMessage('Error updating record!', 'error');
+            }
+        }
+
+        function deleteRecord(recordId) {
+            if (confirm('⚠️ Are you sure you want to delete this record?\n\nThis action cannot be undone!')) {
+                const record = findRecordById(recordId);
+                if (!record) {
+                    showStatusMessage('❌ Record not found!', 'error');
+                    return;
+                }
+                
+                const monthKey = record.monthKey;
+                const recordIndex = branchData[selectedBranch.branchCode][monthKey].data.findIndex(r => r.id == recordId);
+                
+                if (recordIndex !== -1) {
+                    branchData[selectedBranch.branchCode][monthKey].data.splice(recordIndex, 1);
+                    saveBranchData();
+                    
+                    const activeWindow = document.querySelector('.window.active');
+                    if (activeWindow && activeWindow.id === 'reportsWindow') {
+                        const viewType = document.getElementById('viewType').value;
+                        if (viewType === 'monthly') {
+                            const selectedMonth = document.getElementById('filterMonth').value;
+                            if (selectedMonth) {
+                                filterByMonth();
+                            } else {
+                                viewAllData();
+                            }
+                        } else {
+                            viewAllData();
+                        }
+                    } else if (activeWindow && activeWindow.id === 'summaryWindow') {
+                        viewBranchSummary();
+                    }
+                    
+                    const sheetName = branchData[selectedBranch.branchCode][monthKey].sheetName || monthKey;
+                    showStatusMessage(`✅ Record deleted successfully from ${sheetName}!`, 'success');
+                } else {
+                    showStatusMessage('❌ Error deleting record!', 'error');
+                }
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            editingIndex = -1;
+        }
+
+        function changeViewType() {
+            const viewType = document.getElementById('viewType').value;
+            const monthFilter = document.getElementById('monthFilter');
+            
+            if (viewType === 'monthly') {
+                monthFilter.style.display = 'block';
+            } else {
+                monthFilter.style.display = 'none';
+                viewAllData();
+            }
+        }
+
+        function filterByMonth() {
+            const selectedMonth = document.getElementById('filterMonth').value;
+            if (!selectedMonth || !branchData[selectedBranch.branchCode]) return;
+
+            const monthKey = selectedMonth;
+            
+            if (branchData[selectedBranch.branchCode][monthKey] && branchData[selectedBranch.branchCode][monthKey].data) {
+                const sheetName = branchData[selectedBranch.branchCode][monthKey].sheetName;
+                displayData(branchData[selectedBranch.branchCode][monthKey].data, `${sheetName} Data`);
+            } else {
+                document.getElementById('dataDisplay').innerHTML = '<p>No data found for the selected month.</p>';
+            }
+        }
+
+        function viewBranchSummary() {
+            if (!selectedBranch || !branchData[selectedBranch.branchCode]) {
+                showStatusMessage('No data available for branch summary!', 'error');
+                return;
+            }
+
+            const branchCode = selectedBranch.branchCode;
+            const monthKeys = Object.keys(branchData[branchCode]);
+            
+            let totalRecords = 0;
+            let totalAmount = 0;
+            let totalInvoices = 0;
+            let totalCancelled = 0;
+            let monthlyData = [];
+
+            monthKeys.forEach(monthKey => {
+                if (branchData[branchCode][monthKey].data) {
+                    const monthData = branchData[branchCode][monthKey].data;
+                    const monthRecords = monthData.length;
+                    const monthAmount = monthData.reduce((sum, record) => sum + parseFloat(record.amount || 0), 0);
+                    const monthInvoices = monthData.reduce((sum, record) => sum + parseInt(record.total || 0), 0);
+                    const monthCancelled = monthData.reduce((sum, record) => sum + parseInt(record.cancelledInvo || 0), 0);
+                    
+                    totalRecords += monthRecords;
+                    totalAmount += monthAmount;
+                    totalInvoices += monthInvoices;
+                    totalCancelled += monthCancelled;
+                    
+                    monthlyData.push({
+                        month: branchData[branchCode][monthKey].sheetName || monthKey,
+                        records: monthRecords,
+                        amount: monthAmount,
+                        invoices: monthInvoices,
+                        cancelled: monthCancelled
+                    });
+                }
+            });
+
+            let summaryHTML = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px;">📊 Branch Analytics: ${selectedBranch.branchName}</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4 style="color: #27ae60; margin: 0;">Total Records</h4>
+                            <p style="font-size: 24px; font-weight: bold; margin: 5px 0; color: #2c3e50;">${totalRecords}</p>
+                        </div>
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4 style="color: #2196f3; margin: 0;">Total Amount</h4>
+                            <p style="font-size: 24px; font-weight: bold; margin: 5px 0; color: #2c3e50;">₹${totalAmount.toFixed(2)}</p>
+                        </div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4 style="color: #ff9800; margin: 0;">Total Invoices</h4>
+                            <p style="font-size: 24px; font-weight: bold; margin: 5px 0; color: #2c3e50;">${totalInvoices}</p>
+                        </div>
+                        <div style="background: #ffebee; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h4 style="color: #f44336; margin: 0;">Cancelled</h4>
+                            <p style="font-size: 24px; font-weight: bold; margin: 5px 0; color: #2c3e50;">${totalCancelled}</p>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: #2c3e50; margin: 20px 0 10px 0;">Monthly Breakdown:</h4>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Records</th>
+                                    <th>Amount</th>
+                                    <th>Invoices</th>
+                                    <th>Cancelled</th>
+                                    <th>Net Invoices</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+            monthlyData.forEach(month => {
+                const netInvoices = month.invoices - month.cancelled;
+                summaryHTML += `
+                    <tr>
+                        <td><strong>${month.month}</strong></td>
+                        <td>${month.records}</td>
+                        <td><strong>₹${month.amount.toFixed(2)}</strong></td>
+                        <td>${month.invoices}</td>
+                        <td style="color: #f44336;">${month.cancelled}</td>
+                        <td><strong>${netInvoices}</strong></td>
+                    </tr>
+                `;
+            });
+
+            summaryHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('summaryDisplay').innerHTML = summaryHTML;
+            showWindow('summary');
+            showStatusMessage('Branch summary generated successfully!', 'success');
+        }
+
+        function exportCSV() {
+            if (!selectedBranch || !branchData[selectedBranch.branchCode]) {
+                showStatusMessage('No data to export!', 'error');
+                return;
+            }
+
+            const allData = [];
+            const monthKeys = Object.keys(branchData[selectedBranch.branchCode]);
+            
+            monthKeys.forEach(monthKey => {
+                if (branchData[selectedBranch.branchCode][monthKey].data) {
+                    allData.push(...branchData[selectedBranch.branchCode][monthKey].data);
+                }
+            });
+
+            if (allData.length === 0) {
+                showStatusMessage('No data to export!', 'error');
+                return;
+            }
+
+            const headers = ['Date', 'Prefix', 'Invoice Start No', 'Invoice End No', 'Total', 'Cancelled Invoices', 'Net Invoices', 'Amount', 'Cancelled Details', 'Reason', 'Sheet'];
+            
+            let csvContent = headers.join(',') + '\n';
+            
+            allData.forEach(record => {
+                const monthKey = getMonthKey(record.date);
+                const sheetName = branchData[selectedBranch.branchCode][monthKey]?.sheetName || monthKey;
+                
+                const row = [
+                    record.date,
+                    record.prefix,
+                    record.invoStartNo,
+                    record.invoEndNo,
+                    record.total,
+                    record.cancelledInvo,
+                    record.netInvo,
+                    record.amount,
+                    `"${record.cancelledDetails || ''}"`,
+                    `"${record.reason || ''}"`,
+                    sheetName
+                ];
+                csvContent += row.join(',') + '\n';
+            });
+
+            downloadFile(csvContent, `${selectedBranch.branchCode}_all_data.csv`, 'text/csv');
+            showStatusMessage('CSV exported successfully!', 'success');
+        }
+
+        function exportExcel() {
+            if (!selectedBranch || !branchData[selectedBranch.branchCode]) {
+                showStatusMessage('No data to export!', 'error');
+                return;
+            }
+
+            const allData = [];
+            const monthKeys = Object.keys(branchData[selectedBranch.branchCode]);
+            
+            monthKeys.forEach(monthKey => {
+                if (branchData[selectedBranch.branchCode][monthKey].data) {
+                    allData.push(...branchData[selectedBranch.branchCode][monthKey].data);
+                }
+            });
+
+            if (allData.length === 0) {
+                showStatusMessage('No data to export!', 'error');
+                return;
+            }
+
+            let excelContent = `
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Prefix</th>
+                        <th>Invoice Start No</th>
+                        <th>Invoice End No</th>
+                        <th>Total</th>
+                        <th>Cancelled Invoices</th>
+                        <th>Net Invoices</th>
+                        <th>Amount</th>
+                        <th>Cancelled Details</th>
+                        <th>Reason</th>
+                        <th>Sheet</th>
+                    </tr>
+            `;
+
+            allData.forEach(record => {
+                const monthKey = getMonthKey(record.date);
+                const sheetName = branchData[selectedBranch.branchCode][monthKey]?.sheetName || monthKey;
+                
+                excelContent += `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>${record.prefix}</td>
+                        <td>${record.invoStartNo}</td>
+                        <td>${record.invoEndNo}</td>
+                        <td>${record.total}</td>
+                        <td>${record.cancelledInvo}</td>
+                        <td>${record.netInvo}</td>
+                        <td>${record.amount}</td>
+                        <td>${record.cancelledDetails || ''}</td>
+                        <td>${record.reason || ''}</td>
+                        <td>${sheetName}</td>
+                    </tr>
+                `;
+            });
+
+            excelContent += '</table>';
+            
+            downloadFile(excelContent, `${selectedBranch.branchCode}_all_data.xls`, 'application/vnd.ms-excel');
+            showStatusMessage('Excel file exported successfully!', 'success');
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function showStatusMessage(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function createDesktopShortcut() {
+            if (!selectedBranch) {
+                showStatusMessage('Please select a branch first!', 'error');
+                return;
+            }
+
+            const currentUrl = window.location.href.split('?')[0];
+            const shortcutUrl = `${currentUrl}?branch=${selectedBranch.branchCode}`;
+            
+            const shortcutContent = `[InternetShortcut]
+URL=${shortcutUrl}
+IconIndex=0
+HotKey=0`;
+
+            const blob = new Blob([shortcutContent], { type: 'text/plain' });
+            const downloadUrl = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `ICWCS_${selectedBranch.branchCode}_${selectedBranch.branchName.replace(/[^a-zA-Z0-9]/g, '_')}.url`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+            
+            showStatusMessage(`🖥️ Desktop shortcut created for ${selectedBranch.branchName}!`, 'success');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        // Check for branch parameter on page load
+        function checkBranchParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const branchParam = urlParams.get('branch');
+            
+            if (branchParam) {
+                const branch = branchesData.find(b => b.branchCode === branchParam);
+                if (branch) {
+                    selectBranchPermanently(branch);
+                    showStatusMessage(`🎯 Opened directly to ${branch.branchName}!`, 'success');
+                    
+                    setTimeout(() => {
+                        showWindow('entry');
+                    }, 1000);
+                } else {
+                    showStatusMessage(`❌ Branch ${branchParam} not found!`, 'error');
+                }
+            }
+        }
+
+        async function testGoogleSheetsConnection() {
+            if (!selectedBranch) {
+                showStatusMessage('Please select a branch first!', 'error');
+                return;
+            }
+
+            showStatusMessage('🔄 Testing Google Sheets connection...', 'info');
+
+            try {
+                const payload = {
+                    action: 'testConnection',
+                    sheetId: SCRIPT_CONFIG.MASTER_SHEET_ID,
+                    branchCode: selectedBranch.branchCode,
+                    branchName: selectedBranch.branchName
+                };
+
+                const response = await fetch(SCRIPT_CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatusMessage(`✅ Google Sheets connection successful! Sheet: "${result.sheetTitle}" | Test completed at: ${new Date().toLocaleString()}`, 'success');
+                } else {
+                    showStatusMessage(`❌ Google Sheets connection failed: ${result.error}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Connection test error:', error);
+                showStatusMessage(`❌ Connection test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function verifySheetStructure() {
+            if (!selectedBranch) {
+                showStatusMessage('Please select a branch first!', 'error');
+                return;
+            }
+
+            showStatusMessage('🔍 Verifying sheet structure and permissions...', 'info');
+
+            try {
+                const payload = {
+                    action: 'verifyStructure',
+                    sheetId: SCRIPT_CONFIG.MASTER_SHEET_ID,
+                    branchCode: selectedBranch.branchCode,
+                    branchName: selectedBranch.branchName
+                };
+
+                const response = await fetch(SCRIPT_CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    let message = `✅ Sheet Structure Verified!\n\n`;
+                    message += `📋 Master Sheet: "${result.masterSheetTitle}"\n`;
+                    message += `🔗 Sheet ID: ${SCRIPT_CONFIG.MASTER_SHEET_ID}\n`;
+                    message += `📊 Total Sheets: ${result.totalSheets}\n`;
+                    message += `🏢 Branch Sheets Found: ${result.branchSheets.length}\n\n`;
+                    
+                    if (result.branchSheets.length > 0) {
+                        message += `📝 Existing Branch Sheets:\n`;
+                        result.branchSheets.forEach(sheet => {
+                            message += `   • ${sheet}\n`;
+                        });
+                    }
+                    
+                    message += `\n✅ Write permissions: ${result.canWrite ? 'Granted' : 'Denied'}`;
+                    message += `\n📅 Verified at: ${new Date().toLocaleString()}`;
+                    
+                    showDetailedMessage(message, 'success');
+                } else {
+                    showStatusMessage(`❌ Sheet verification failed: ${result.error}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Sheet verification error:', error);
+                showStatusMessage(`❌ Verification failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDataSync() {
+            if (!selectedBranch) {
+                showStatusMessage('Please select a branch first!', 'error');
+                return;
+            }
+
+            showStatusMessage('📊 Testing data synchronization...', 'info');
+
+            try {
+                // Create test data
+                const testData = {
+                    date: new Date().toISOString().split('T')[0],
+                    prefix: 'TEST',
+                    invoiceStartNo: '1',
+                    invoiceEndNo: '1',
+                    total: '1',
+                    cancelledInvoices: '0',
+                    netInvoices: '1',
+                    amount: '100.00',
+                    cancelledDetails: '',
+                    reason: 'Connection Test Entry',
+                    timestamp: new Date().toISOString()
+                };
+
+                const [year, month] = testData.date.split('-');
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                const monthName = monthNames[parseInt(month) - 1];
+                const sheetName = `${selectedBranch.branchCode}_${monthName}_${year}`;
+
+                const payload = {
+                    action: 'testDataSync',
+                    sheetId: SCRIPT_CONFIG.MASTER_SHEET_ID,
+                    sheetName: sheetName,
+                    branchCode: selectedBranch.branchCode,
+                    branchName: selectedBranch.branchName,
+                    data: testData
+                };
+
+                const response = await fetch(SCRIPT_CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    let message = `✅ Data Sync Test Successful!\n\n`;
+                    message += `📊 Test Sheet: "${sheetName}"\n`;
+                    message += `📝 Test Entry: ${result.isNewSheet ? 'Created new sheet' : 'Added to existing sheet'}\n`;
+                    message += `📍 Row Position: ${result.rowPosition}\n`;
+                    message += `🔗 Sheet URL: ${result.sheetUrl || 'Available in Google Sheets'}\n`;
+                    message += `📅 Sync completed at: ${new Date().toLocaleString()}\n\n`;
+                    message += `⚠️ Note: This was a test entry. You can delete it from the sheet if needed.`;
+                    
+                    showDetailedMessage(message, 'success');
+                } else {
+                    showStatusMessage(`❌ Data sync test failed: ${result.error}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Data sync test error:', error);
+                showStatusMessage(`❌ Sync test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function showDetailedMessage(message, type) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                max-width: 600px;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            `;
+
+            const typeColors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#3498db'
+            };
+
+            content.innerHTML = `
+                <div style="border-left: 5px solid ${typeColors[type]}; padding-left: 20px; margin-bottom: 20px;">
+                    <h3 style="color: ${typeColors[type]}; margin: 0 0 15px 0;">
+                        ${type === 'success' ? '✅ Success' : type === 'error' ? '❌ Error' : 'ℹ️ Information'}
+                    </h3>
+                    <pre style="white-space: pre-wrap; font-family: 'Segoe UI', sans-serif; line-height: 1.5; margin: 0; color: #2c3e50;">${message}</pre>
+                </div>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        style="background: ${typeColors[type]}; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    Close
+                </button>
+            `;
+
+            modal.className = 'modal-overlay';
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+
+            // Auto-close after 15 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    if (modal.parentNode) {
+                        modal.remove();
+                    }
+                }, 15000);
+            }
+        }
+
+        // Initialize the application when page loads
+        window.onload = function() {
+            initializeApp();
+            checkBranchParameter();
+        };
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d879db304f5677',t:'MTc1NDkyMzA5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
